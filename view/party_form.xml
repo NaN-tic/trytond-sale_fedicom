@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!-- The COPYRIGHT file at the top level of this repository contains the full
+     copyright notices and license terms. -->
+<data>
+    <xpath expr="/form/notebook" position="inside">
+        <page id="fedicom" string="Fedicom Config">
+            <label name="fedicom_user"/>
+            <field name="fedicom_user"/>
+            <label name="fedicom_password"/>
+            <field name="fedicom_password"/>
+        </page>
+    </xpath>
+</data>

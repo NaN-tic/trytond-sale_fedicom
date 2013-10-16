@@ -1,0 +1,7 @@
+server = 'localhost'
+port = 8000
+db = 'database'
+user = 'admin'
+password = 'admin'
+LOG = '/tmp/fedicom.log'
+#LOG='c:\\fedicom\\fedicom.log'

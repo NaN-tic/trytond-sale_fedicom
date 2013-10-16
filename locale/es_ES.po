@@ -1,0 +1,175 @@
+# 
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "error:fedicom.config:"
+msgid "Please try to restart server"
+msgstr "Por favor, pruebe de reiniciar el servidor"
+
+msgctxt "error:fedicom.config:"
+msgid "Test Failed"
+msgstr "Prueba fallida"
+
+msgctxt "error:fedicom.config:"
+msgid "Test Ok"
+msgstr "Prueba correcta"
+
+msgctxt "error:sale.sale:"
+msgid "El pedido no ha podido assignar ningun Producto"
+msgstr "No se ha podido assignar ningún producto al pedido"
+
+msgctxt "error:sale.sale:"
+msgid "Incorrect Login User"
+msgstr "Nombre de usuario incorrecto"
+
+msgctxt "error:sale.sale:"
+msgid "Incorrect Password (%s)"
+msgstr "Password incorrecto \"%s\""
+
+msgctxt "error:sale.sale:"
+msgid "User code (%s) not Exists"
+msgstr "El código de usuario \"%s\" no existe"
+
+msgctxt "field:fedicom.config,create_date:"
+msgid "Create Date"
+msgstr "Fecha creación"
+
+msgctxt "field:fedicom.config,create_uid:"
+msgid "Create User"
+msgstr "Usuario creación"
+
+msgctxt "field:fedicom.config,host:"
+msgid "Host"
+msgstr "Host"
+
+msgctxt "field:fedicom.config,id:"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "field:fedicom.config,name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:fedicom.config,port:"
+msgid "Port"
+msgstr "Puerto"
+
+msgctxt "field:fedicom.config,rec_name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:fedicom.config,user:"
+msgid "User"
+msgstr "Usuario"
+
+msgctxt "field:fedicom.config,write_date:"
+msgid "Write Date"
+msgstr "Fecha modificación"
+
+msgctxt "field:fedicom.config,write_uid:"
+msgid "Write User"
+msgstr "Usuario modificación"
+
+msgctxt "field:fedicom.log,create_date:"
+msgid "Create Date"
+msgstr "Fecha creación"
+
+msgctxt "field:fedicom.log,create_uid:"
+msgid "Create User"
+msgstr "Usuario creación"
+
+msgctxt "field:fedicom.log,id:"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "field:fedicom.log,message:"
+msgid "Message"
+msgstr "Mensaje"
+
+msgctxt "field:fedicom.log,party:"
+msgid "Customer"
+msgstr "Cliente"
+
+msgctxt "field:fedicom.log,rec_name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:fedicom.log,sale:"
+msgid "Sale"
+msgstr "Venta"
+
+msgctxt "field:fedicom.log,timestamp:"
+msgid "Timestamp"
+msgstr "Fecha-hora"
+
+msgctxt "field:fedicom.log,write_date:"
+msgid "Write Date"
+msgstr "Fecha modificación"
+
+msgctxt "field:fedicom.log,write_uid:"
+msgid "Write User"
+msgstr "Usuario modificación"
+
+msgctxt "field:party.party,fedicom_password:"
+msgid "Fedicom password"
+msgstr "Password fedicom"
+
+msgctxt "field:party.party,fedicom_user:"
+msgid "Fedicom User"
+msgstr "Usuario fedicom"
+
+msgctxt "model:fedicom.config,name:"
+msgid "Fedicom Config"
+msgstr "Configuración Fedicom"
+
+msgctxt "model:fedicom.log,name:"
+msgid "Fedicom Log"
+msgstr "Registro Fedicom"
+
+msgctxt "model:ir.action,name:act_fedicom_config"
+msgid "Fedicom Config"
+msgstr "Configuración Fedicom"
+
+msgctxt "model:ir.action,name:act_fedicom_log"
+msgid "Fedicom Log"
+msgstr "Registro Fedicom"
+
+msgctxt "model:ir.action.act_window,name:act_fedicom_config"
+msgid "Fedicom Config"
+msgstr "Configuración Fedicom"
+
+msgctxt "model:ir.action.act_window,name:act_fedicom_log"
+msgid "Fedicom Log"
+msgstr "Registro Fedicom"
+
+msgctxt "model:ir.ui.menu,name:menu_fedicom_config"
+msgid "Fedicom Config"
+msgstr "Configuración Fedicom"
+
+msgctxt "model:ir.ui.menu,name:menu_fedicom_log"
+msgid "Fedicom Log"
+msgstr "Registro Fedicom"
+
+msgctxt "model:res.group,name:group_sale_fedicom"
+msgid "Sale Fedicom"
+msgstr "Ventas Fedicom"
+
+msgctxt "view:fedicom.config:"
+msgid "Fedicom Config"
+msgstr "Configuración Fedicom"
+
+msgctxt "view:fedicom.config:"
+msgid "Reset conection"
+msgstr "Reiniciar conexión"
+
+msgctxt "view:fedicom.config:"
+msgid "Test conection"
+msgstr "Probar conexión"
+
+msgctxt "view:fedicom.log:"
+msgid "Fedicom Log"
+msgstr "Registro Fedicom"
+
+msgctxt "view:party.party:"
+msgid "Fedicom Config"
+msgstr "Configuración Fedicom"

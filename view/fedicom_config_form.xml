@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!-- The COPYRIGHT file at the top level of this repository contains the full
+     copyright notices and license terms. -->
+<form string="Fedicom Config">
+    <label name="name"/>
+    <field name="name"/>
+    <label name="user"/>
+    <field name="user"/>
+    <label name="host"/>
+    <field name="host"/>
+    <label name="port"/>
+    <field name="port"/>
+    <button name="test" string="Test conection" colspan="2"/>
+    <button name="restart" string="Reset conection" colspan="2"/>
+</form>
