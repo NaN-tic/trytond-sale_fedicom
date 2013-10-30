@@ -1,4 +1,7 @@
 # encoding: utf-8
+# The COPYRIGHT file at the top level of this repository contains the full
+# copyright notices and license terms.
+
 import threading
 from _socket import *
 import logger
@@ -92,7 +95,6 @@ class ClientThread(threading.Thread):
         next_message = init_session.next_state()
         order = {}
         orderlines = {}
-        send_message = ""
         while i < len(msg_list) - 1:
             log.notifyChannel("clientthread.py", logger.LOG_INFO, 'Processant'
                 ' Message, %s' % (msg_list[i]))
@@ -128,8 +130,10 @@ class ClientThread(threading.Thread):
                         order_line = OrderLine()
                         order_line.set_msg(msg)
                         next_message = order_line.next_state()
-                        orderlines[order_line.article_code] = int(order_line.amount)
-                        self.article[order_line.article_code]=order_line.article_code
+                        orderlines[order_line.article_code] = \
+                            int(order_line.amount)
+                        self.article[order_line.article_code] = \
+                            order_line.article_code
 
                     elif msg.startswith('1050'):
                         log.notifyChannel("clientthread.py", logger.LOG_INFO,
@@ -231,5 +235,3 @@ class ClientThread(threading.Thread):
         log.notifyChannel("clientthread.py", logger.LOG_INFO,
             "Resposta:%s" % result.replace("\r\n", "<lf><cr>\r\n"))
         self.ts.send(result)
-
-

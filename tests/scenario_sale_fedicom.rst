@@ -207,9 +207,10 @@ Create sales from fedicom::
     >>> products = [['1234567', 5]]
     >>> ret = Sale.process_order([],'xxxx','xxxx','FEDI', products,
     ...     config.context)
+    >>> 
     >>> len(ret['missingStock']) == 0
     True
-    >>> sale, = Sale.find([('reference', '=', 'FEDI')])
+    >>> sale, = Sale.find([])
     >>> len(sale.lines) == 1
     True
     >>> len(sale.shipments) == 1
@@ -229,7 +230,7 @@ Create sales from fedicom::
     ...     config.context)
     >>> len(ret['missingStock']) == 0
     True
-    >>> sale, = Sale.find([('reference', '=', 'FEDI2')])
+    >>> sale = Sale(2)
     >>> len(sale.lines) == 3
     True
     >>> len(sale.shipments) == 1
@@ -254,7 +255,7 @@ Test missing stocks::
     True
     >>> sum(x[1] for x in ret['missingStock']) == 3
     True
-    >>> sale, = Sale.find([('reference', '=', 'FEDI3')])
+    >>> sale = Sale(3)
     >>> len(sale.lines) == 2
     True
     >>> len(sale.shipments) == 1
