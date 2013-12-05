@@ -73,6 +73,12 @@ class IncidenceHeader(Message):
         else:
             return '0'
 
+    def get_charge_deferement(self):
+        if self.charge_deferment:
+            return '1'
+        else:
+            return '0'
+
     def get_condition_service(self):
         if self.condition_service:
             return '1'
