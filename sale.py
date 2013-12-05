@@ -1,8 +1,10 @@
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
-import subprocess
 import datetime
 import logging
+import subprocess
+import sys
+import traceback
 
 from trytond.model import ModelSingleton, ModelSQL, ModelView, fields
 from trytond.pool import Pool, PoolMeta
@@ -64,6 +66,11 @@ class Sale:
             return cls.process_order_internal(sales, customer_code, password,
                 order, products)
         except Exception, e:
+            exc_type, exc_value = sys.exc_info()[:2]
+            logger = logging.getLogger('sale_fedicom')
+            logger.warning("Exception processing fedicom order: %s (%s)\n  %s"
+                % (exc_type, exc_value, traceback.format_exc()))
+
             # Ensure we free table lock
             print "Process Order Internal ha petat :("
             print str(e)
@@ -182,6 +189,8 @@ class Sale:
                 lvals.update(SaleLine(product=product, sale=None, unit=None,
                         quantity=None, description=None).on_change_product())
                 cls.remove_rec_names(lvals)
+                if lvals.get('taxes'):
+                    lvals['taxes'] = [('set', lvals['taxes'])]
                 del lvals['amount']
 
                 lines.append(lvals)
