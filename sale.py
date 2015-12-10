@@ -190,7 +190,7 @@ class Sale:
                         quantity=None, description=None).on_change_product())
                 cls.remove_rec_names(lvals)
                 if lvals.get('taxes'):
-                    lvals['taxes'] = [('set', lvals['taxes'])]
+                    lvals['taxes'] = [('add', lvals['taxes'])]
                 del lvals['amount']
 
                 lines.append(lvals)
