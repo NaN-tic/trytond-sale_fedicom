@@ -5,6 +5,7 @@ import logging
 import subprocess
 import sys
 import traceback
+from itertools import chain
 
 from trytond.model import ModelSingleton, ModelSQL, ModelView, fields
 from trytond.pool import Pool, PoolMeta
@@ -89,7 +90,6 @@ class Sale:
         FedicomLog = pool.get('fedicom.log')
         Product = pool.get('product.product')
         SaleLine = pool.get('sale.line')
-        ShipmentOut = pool.get('stock.shipment.out')
         Location = pool.get('stock.location')
 
         logger = logging.getLogger('sale_fedicom')
@@ -208,21 +208,12 @@ class Sale:
             logger.info("Returning Misses")
             return {'missingStock': missing_stock}
 
-        sales = cls.create([sale])
-        sale, = sales
-        for line in lines:
-            line['sale'] = sale.id
-        SaleLine.create(lines)
-        logger.info("Order Created: %s" % sale.rec_name)
-        cls.quote(sales)
-        cls.confirm(sales)
-        cls.process(sales)
-
-        logger.info("Order confirmed %s" % sale.rec_name)
-
-        ShipmentOut.wait(sale.shipments)
-        ShipmentOut.assign_try(sale.shipments)
-
+        sales = cls.create_fedicom_sales(sale, lines)
+        for sale in sales:
+            logger.info("Order Created: %s" % sale.rec_name)
+        cls.process_fedicom_sales(sales)
+        for sale in sales:
+            logger.info("Order confirmed %s" % sale.rec_name)
         with transaction.set_user(0):
             FedicomLog.create([{
                 'message': 'Nuevo pedido',
@@ -232,6 +223,23 @@ class Sale:
 
         logger.info("Returning Misses")
         return {'missingStock': missing_stock}
+
+    @classmethod
+    def create_fedicom_sales(cls, sale, lines):
+        sale['lines'] = [('create', lines)]
+        sales = cls.create([sale])
+        return sales
+
+    @classmethod
+    def process_fedicom_sales(cls, sales):
+        pool = Pool()
+        ShipmentOut = pool.get('stock.shipment.out')
+        cls.quote(sales)
+        cls.confirm(sales)
+        cls.process(sales)
+        shipments = list(chain(*(s.shipments for s in sales)))
+        ShipmentOut.wait(shipments)
+        ShipmentOut.assign_try(shipments)
 
 
 class FedicomConfig(ModelSingleton, ModelSQL, ModelView):
