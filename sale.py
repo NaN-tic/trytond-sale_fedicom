@@ -13,7 +13,6 @@ from trytond.rpc import RPC
 from trytond.transaction import Transaction
 
 __metaclass__ = PoolMeta
-
 __all__ = ['Party', 'Sale', 'FedicomConfig', 'FedicomLog']
 
 
@@ -42,6 +41,8 @@ class Party:
 class Sale:
     __name__ = 'sale.sale'
 
+    from_fedicom = fields.Boolean('Is Fedicom Sale?')
+
     @classmethod
     def __setup__(cls):
         super(Sale, cls).__setup__()
@@ -54,6 +55,10 @@ class Sale:
             'incorrect_password': 'Incorrect Password (%s)',
             'no_products': 'El pedido no ha podido assignar ningun Producto',
             })
+
+    @staticmethod
+    def default_from_fedicom():
+        return False
 
     @staticmethod
     def remove_rec_names(values):
@@ -227,6 +232,7 @@ class Sale:
     @classmethod
     def create_fedicom_sales(cls, sale, lines):
         sale['lines'] = [('create', lines)]
+        sale['from_fedicom'] = True
         sales = cls.create([sale])
         return sales
 
