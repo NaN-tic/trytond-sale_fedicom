@@ -216,6 +216,15 @@ class Sale:
         sales = cls.create_fedicom_sales(sale, lines)
         for sale in sales:
             logger.info("Order Created: %s" % sale.rec_name)
+        msg_error, party = cls._check_fedicom_sales(sales)
+        if msg_error:
+            with transaction.set_user(0):
+                FedicomLog.create([{
+                            'message': msg_error,
+                            'party': party,
+                            }])
+            logger.info("Sale of party %s not accepted." % party)
+            return {'error': msg_error}
         cls.process_fedicom_sales(sales)
         for sale in sales:
             logger.info("Order confirmed %s" % sale.rec_name)
@@ -246,6 +255,10 @@ class Sale:
         shipments = list(chain(*(s.shipments for s in sales)))
         ShipmentOut.wait(shipments)
         ShipmentOut.assign_try(shipments)
+
+    @classmethod
+    def _check_fedicom_sales(cls, sales):
+        return False, False
 
 
 class FedicomConfig(ModelSingleton, ModelSQL, ModelView):
