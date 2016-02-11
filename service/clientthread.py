@@ -25,6 +25,10 @@ log = logger.Logger()
 def unaccent(text):
     if isinstance(text, str):
         text = unicode(text, 'utf-8')
+    elif isinstance(text, unicode):
+        pass
+    else:
+        text = unicode(text)
     return unicodedata.normalize('NFKD', text).encode('ASCII', 'ignore')
 
 
@@ -112,7 +116,7 @@ class ClientThread(threading.Thread):
                     % (msg[0:4], str(next_message)))
                 reject_transmission = RejectTransmission("Se ha producido un "
                     "error, Trama enviada no pertenece al estado siguiente")
-                self.ts.send(unaccent(str(reject_transmission)))
+                self.ts.send(str(unaccent(reject_transmission)))
                 break
 
             for state in next_message:
@@ -154,7 +158,7 @@ class ClientThread(threading.Thread):
                             'Tram no tractada.')
                         reject_transmission = RejectTransmission("Se ha "
                             "producido un error, Trama enviada no reconocida")
-                        self.ts.send(unnaccent(str(reject_transmission)))
+                        self.ts.send(str(unaccent(reject_transmission)))
                         return
 
             i = i + 1
@@ -231,7 +235,7 @@ class ClientThread(threading.Thread):
         result = str(InitSession(self.user, self.password, self.date))
         for k, order in send_data.iteritems():
             if order.get('error', False):
-                self.ts.send(unaccent(str(order['error'])
+                self.ts.send(str(unaccent(order['error'])
                         + str(CloseSession(""))))
                 return
             result += str(IncidenceHeader(self.user, k))
