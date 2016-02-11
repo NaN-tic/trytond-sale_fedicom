@@ -3,6 +3,7 @@
 # copyright notices and license terms.
 
 import threading
+import unicodedata
 from _socket import *
 import logger
 from nan_socket import *
@@ -19,6 +20,12 @@ from messages.reject_transmission import RejectTransmission
 from jsonrpc import ServerProxy
 
 log = logger.Logger()
+
+
+def unaccent(text):
+    if isinstance(text, str):
+        text = unicode(text, 'utf-8')
+    return unicodedata.normalize('NFKD', text).encode('ASCII', 'ignore')
 
 
 class ClientThread(threading.Thread):
@@ -105,7 +112,7 @@ class ClientThread(threading.Thread):
                     % (msg[0:4], str(next_message)))
                 reject_transmission = RejectTransmission("Se ha producido un "
                     "error, Trama enviada no pertenece al estado siguiente")
-                self.ts.send(str(reject_transmission))
+                self.ts.send(unaccent(str(reject_transmission)))
                 break
 
             for state in next_message:
@@ -147,7 +154,7 @@ class ClientThread(threading.Thread):
                             'Tram no tractada.')
                         reject_transmission = RejectTransmission("Se ha "
                             "producido un error, Trama enviada no reconocida")
-                        self.ts.send(str(reject_transmission))
+                        self.ts.send(unnaccent(str(reject_transmission)))
                         return
 
             i = i + 1
@@ -224,7 +231,8 @@ class ClientThread(threading.Thread):
         result = str(InitSession(self.user, self.password, self.date))
         for k, order in send_data.iteritems():
             if order.get('error', False):
-                self.ts.send(str(order['error']) + str(CloseSession("")))
+                self.ts.send(unaccent(str(order['error'])
+                        + str(CloseSession(""))))
                 return
             result += str(IncidenceHeader(self.user, k))
             order['order']
@@ -234,4 +242,4 @@ class ClientThread(threading.Thread):
         result += str(CloseSession(""))
         log.notifyChannel("clientthread.py", logger.LOG_INFO,
             "Resposta:%s" % result.replace("\r\n", "<lf><cr>\r\n"))
-        self.ts.send(result)
+        self.ts.send(unaccent(result))
