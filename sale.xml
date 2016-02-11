@@ -1,40 +1,25 @@
 <?xml version="1.0"?>
 <tryton>
-	<data>
-
-        <record model="res.group" id="group_sale_fedicom">
-            <field name="name">Sale Fedicom</field>
-        </record>
-
-        <record model="res.user-res.group" id="user_admin_group_sale_fedicom">
-            <field name="user" ref="res.user_admin"/>
-            <field name="group" ref="group_sale_fedicom"/>
-        </record>
-
-        <record model="res.user-res.group" id="user_trigger_group_sale_fedicom">
-            <field name="user" ref="res.user_trigger"/>
-            <field name="group" ref="group_sale_fedicom"/>
-        </record>
-
-		<record model="ir.ui.view" id="view_party_fedicom_form">
-			<field name="name">party_form</field>
-			<field name="model">party.party</field>
+    <data>
+        <record model="ir.ui.view" id="view_party_fedicom_form">
+            <field name="name">party_form</field>
+            <field name="model">party.party</field>
             <field name="inherit" ref="party.party_view_form" />
-			<field name="type">form</field>
-		</record>
-
-
-		<record model="ir.ui.view" id="view_fedicom_log_tree">
-			<field name="name">fedicom_log_tree</field>
-			<field name="model">fedicom.log</field>
-			<field name="type">tree</field>
-		</record>
-
-		<record model="ir.ui.view" id="view_fedicom_log_form">
-			<field name="name">fedicom_log_form</field>
-			<field name="model">fedicom.log</field>
-			<field name="type">form</field>
-		</record>
+            <field name="type">form</field>
+        </record>
+        
+        
+        <record model="ir.ui.view" id="view_fedicom_log_tree">
+            <field name="name">fedicom_log_tree</field>
+            <field name="model">fedicom.log</field>
+            <field name="type">tree</field>
+        </record>
+        
+        <record model="ir.ui.view" id="view_fedicom_log_form">
+            <field name="name">fedicom_log_form</field>
+            <field name="model">fedicom.log</field>
+            <field name="type">form</field>
+        </record>
 
         <record model="ir.action.act_window" id="act_fedicom_log">
             <field name="name">Fedicom Log</field>
@@ -50,36 +35,11 @@
             <field name="view" ref="view_fedicom_log_form"/>
             <field name="act_window" ref="act_fedicom_log"/>
         </record>
-
-		<record model="ir.ui.view" id="view_fedicom_config_form">
-			<field name="name">fedicom_config_form</field>
-			<field name="model">fedicom.config</field>
-			<field name="type">form</field>
-		</record>
-
-        <record model="ir.action.act_window" id="act_fedicom_config">
-            <field name="name">Fedicom Config</field>
-            <field name="res_model">fedicom.config</field>
-        </record>
-        <record model="ir.action.act_window.view" id="act_fedicom_config_view1">
-            <field name="sequence" eval="10"/>
-            <field name="view" ref="view_fedicom_config_form"/>
-            <field name="act_window" ref="act_fedicom_config"/>
-        </record>
         <menuitem name="Fedicom Log" parent="sale.menu_sale"
                 action="act_fedicom_log" id="menu_fedicom_log"/>
 
         <record model="ir.ui.menu-res.group" id="menu_log_group_sale_fedicom">
             <field name="menu" ref="menu_fedicom_log"/>
-            <field name="group" ref="group_sale_fedicom"/>
-        </record>
-
-        <menuitem name="Fedicom Config" parent="sale.menu_configuration"
-                action="act_fedicom_config" id="menu_fedicom_config"/>
-
-        <record model="ir.ui.menu-res.group"
-            id="menu_config_group_sale_fedicom">
-            <field name="menu" ref="menu_fedicom_config"/>
             <field name="group" ref="group_sale_fedicom"/>
         </record>
 
@@ -90,14 +50,5 @@
             <field name="perm_create" eval="False"/>
             <field name="perm_delete" eval="False"/>
         </record>
-        <record model="ir.model.access" id="access_sale_sale">
-            <field name="model" search="[('model', '=', 'fedicom.config')]"/>
-            <field name="group" ref="group_sale_fedicom"/>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_delete" eval="True"/>
-        </record>
-
     </data>
 </tryton>
