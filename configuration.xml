@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<tryton>
+    <data>
+        <record model="res.group" id="group_sale_fedicom">
+            <field name="name">Sale Fedicom</field>
+        </record>
+
+        <record model="res.user-res.group" id="user_admin_group_sale_fedicom">
+            <field name="user" ref="res.user_admin"/>
+            <field name="group" ref="group_sale_fedicom"/>
+        </record>
+
+        <record model="res.user-res.group" id="user_trigger_group_sale_fedicom">
+            <field name="user" ref="res.user_trigger"/>
+            <field name="group" ref="group_sale_fedicom"/>
+        </record>
+
+        <record model="ir.ui.view" id="view_fedicom_configuration_form">
+            <field name="name">fedicom_configuration_form</field>
+            <field name="model">fedicom.configuration</field>
+            <field name="type">form</field>
+        </record>
+
+        <record model="ir.ui.menu-res.group"
+            id="menu_config_group_sale_fedicom">
+            <field name="menu" ref="menu_fedicom_configuration"/>
+            <field name="group" ref="group_sale_fedicom"/>
+        </record>
+
+        <record model="ir.action.act_window" id="act_fedicom_configuration">
+            <field name="name">Fedicom Configuration</field>
+            <field name="res_model">fedicom.configuration</field>
+        </record>
+        <record model="ir.action.act_window.view" id="act_fedicom_configuration_view1">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="view_fedicom_configuration_form"/>
+            <field name="act_window" ref="act_fedicom_configuration"/>
+        </record>
+
+        <menuitem name="Fedicom Config" parent="sale.menu_configuration"
+                action="act_fedicom_configuration" id="menu_fedicom_configuration"/>
+
+        <record model="ir.ui.menu-res.group"
+            id="menu_configuration_group_sale_fedicom">
+            <field name="menu" ref="menu_fedicom_configuration"/>
+            <field name="group" ref="group_sale_fedicom"/>
+        </record>
+
+        <record model="ir.model.access" id="access_sale_sale">
+            <field name="model" search="[('model', '=', 'fedicom.configuration')]"/>
+            <field name="group" ref="group_sale_fedicom"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_delete" eval="True"/>
+        </record>
+    </data>
+</tryton>

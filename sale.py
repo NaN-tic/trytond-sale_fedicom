@@ -2,26 +2,17 @@
 # copyright notices and license terms.
 import datetime
 import logging
-import subprocess
 import sys
 import traceback
+from itertools import chain
 
-from trytond.model import ModelSingleton, ModelSQL, ModelView, fields
+from trytond.model import ModelSQL, ModelView, fields
 from trytond.pool import Pool, PoolMeta
 from trytond.rpc import RPC
 from trytond.transaction import Transaction
 
 __metaclass__ = PoolMeta
-
-__all__ = ['Party', 'Sale', 'FedicomConfig', 'FedicomLog']
-
-
-def isInt(value):
-    try:
-        int(value)
-        return True
-    except:
-        return False
+__all__ = ['Party', 'Sale', 'FedicomLog']
 
 
 def convertToInt(value):
@@ -41,6 +32,8 @@ class Party:
 class Sale:
     __name__ = 'sale.sale'
 
+    from_fedicom = fields.Boolean('Is Fedicom Sale?')
+
     @classmethod
     def __setup__(cls):
         super(Sale, cls).__setup__()
@@ -53,6 +46,10 @@ class Sale:
             'incorrect_password': 'Incorrect Password (%s)',
             'no_products': 'El pedido no ha podido assignar ningun Producto',
             })
+
+    @staticmethod
+    def default_from_fedicom():
+        return False
 
     @staticmethod
     def remove_rec_names(values):
@@ -89,7 +86,6 @@ class Sale:
         FedicomLog = pool.get('fedicom.log')
         Product = pool.get('product.product')
         SaleLine = pool.get('sale.line')
-        ShipmentOut = pool.get('stock.shipment.out')
         Location = pool.get('stock.location')
 
         logger = logging.getLogger('sale_fedicom')
@@ -119,7 +115,7 @@ class Sale:
                 FedicomLog.create([{
                     'message': cls.raise_user_error('incorrect_password',
                             password, raise_exception=False),
-                    'party': party
+                    'party': party.id
                 }])
             logger.info("Invalid password for user %s " % customer_code)
             return {'error': cls.raise_user_error('incorrect_login',
@@ -208,21 +204,21 @@ class Sale:
             logger.info("Returning Misses")
             return {'missingStock': missing_stock}
 
-        sales = cls.create([sale])
-        sale, = sales
-        for line in lines:
-            line['sale'] = sale.id
-        SaleLine.create(lines)
-        logger.info("Order Created: %s" % sale.rec_name)
-        cls.quote(sales)
-        cls.confirm(sales)
-        cls.process(sales)
-
-        logger.info("Order confirmed %s" % sale.rec_name)
-
-        ShipmentOut.wait(sale.shipments)
-        ShipmentOut.assign_try(sale.shipments)
-
+        sales = cls.create_fedicom_sales(sale, lines)
+        for sale in sales:
+            logger.info("Order Created: %s" % sale.rec_name)
+        msg_error, party_err = cls._check_fedicom_sales(sales)
+        if msg_error:
+            with transaction.set_user(0):
+                FedicomLog.create([{
+                            'message': msg_error,
+                            'party': party_err,
+                            }])
+            logger.info("Sale of party %s not accepted." % party_err)
+            return {'error': msg_error}
+        cls.process_fedicom_sales(sales)
+        for sale in sales:
+            logger.info("Order confirmed %s" % sale.rec_name)
         with transaction.set_user(0):
             FedicomLog.create([{
                 'message': 'Nuevo pedido',
@@ -233,49 +229,33 @@ class Sale:
         logger.info("Returning Misses")
         return {'missingStock': missing_stock}
 
+    @classmethod
+    def create_fedicom_sales(cls, sale, lines):
+        pool = Pool()
+        Config = pool.get('fedicom.configuration')
+        config = Config(1)
 
-class FedicomConfig(ModelSingleton, ModelSQL, ModelView):
-    'Fedicom Config'
-    __name__ = 'fedicom.config'
-
-    name = fields.Char('Name', required=True)
-    host = fields.Char('Host')
-    port = fields.Integer('Port')
-    user = fields.Many2One('res.user', 'User')
+        sale['lines'] = [('create', lines)]
+        sale['from_fedicom'] = True
+        if not 'warehouse' in sale or not sale.get('warehouse', False): 
+            sale['warehouse'] = config.warehouse
+        sales = cls.create([sale])
+        return sales
 
     @classmethod
-    def __setup__(cls):
-        super(FedicomConfig, cls).__setup__()
-        cls._buttons.update({
-            'test': {},
-            'restart': {},
-            })
-        cls._error_messages.update({
-            'test_failed': 'Test Failed',
-            'test_ok': 'Test Ok',
-            'restart_server': 'Please try to restart server',
-            })
+    def process_fedicom_sales(cls, sales):
+        pool = Pool()
+        ShipmentOut = pool.get('stock.shipment.out')
+        cls.quote(sales)
+        cls.confirm(sales)
+        cls.process(sales)
+        shipments = list(chain(*(s.shipments for s in sales)))
+        ShipmentOut.wait(shipments)
+        ShipmentOut.assign_try(shipments)
 
     @classmethod
-    @ModelView.button
-    def restart(cls, instances):
-        logging.getLogger('sale_fedicom').info(
-                "Starting/Restarting Service")
-
-        service_file = "./modules/sale_fedicom/service/service.py"
-        subprocess.Popen(["pkill", "-9", "-f", service_file])
-        subprocess.Popen(["python", service_file], stdout=subprocess.PIPE)
-
-    @classmethod
-    @ModelView.button
-    def test(cls, instances):
-        try:
-            subprocess.check_output(["python",
-                "./modules/sale_fedicom/service/client.py"])
-        except:
-            cls.raise_user_error('test_failed', 'restart_server')
-
-        cls.raise_user_warning('test_ok')
+    def _check_fedicom_sales(cls, sales):
+        return False, False
 
 
 class FedicomLog(ModelSQL, ModelView):
