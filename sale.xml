@@ -6,8 +6,7 @@
             <field name="model">party.party</field>
             <field name="inherit" ref="party.party_view_form" />
             <field name="type">form</field>
-        </record>
-        
+        </record>        
         
         <record model="ir.ui.view" id="view_fedicom_log_tree">
             <field name="name">fedicom_log_tree</field>
@@ -49,6 +48,13 @@
             <field name="perm_write" eval="False"/>
             <field name="perm_create" eval="False"/>
             <field name="perm_delete" eval="False"/>
+        </record>
+
+        <record model="ir.ui.view" id="sale_view_tree">
+            <field name="model">sale.sale</field>
+            <field name="type">tree</field>
+            <field name="inherit" ref="sale.sale_view_tree" />
+            <field name="name">sale_tree</field>
         </record>
     </data>
 </tryton>
