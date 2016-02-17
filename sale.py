@@ -32,7 +32,7 @@ class Party:
 class Sale:
     __name__ = 'sale.sale'
 
-    from_fedicom = fields.Boolean('Is Fedicom Sale?')
+    from_fedicom = fields.Boolean('Is Fedicom Sale?', readonly=True)
 
     @classmethod
     def __setup__(cls):
