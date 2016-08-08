@@ -240,13 +240,13 @@ class Sale:
         if not 'warehouse' in sale or not sale.get('warehouse', False):
             sale['warehouse'] = config.warehouse
         sales = cls.create([sale])
-        cls.quote(sales)
         return sales
 
     @classmethod
     def process_fedicom_sales(cls, sales):
         pool = Pool()
         ShipmentOut = pool.get('stock.shipment.out')
+        cls.quote(sales)
         cls.confirm(sales)
         cls.process(sales)
         shipments = list(chain(*(s.shipments for s in sales)))
