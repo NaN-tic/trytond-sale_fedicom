@@ -157,7 +157,7 @@ class Sale:
                 # If product doesn't exist...
                 missing_stock.append((prod[0], ordered, 'NOT_WORKED'))
                 assigned = 0
-                logger.info("Procuct %s Not Worked" % prod[0])
+                logger.info("Product %s Not Worked" % prod[0])
             else:
                 # If product exists...
                 already_assigned = assigned_products.get(product_code, 0)
@@ -172,7 +172,7 @@ class Sale:
 
                 assigned_products[product_code] = already_assigned + assigned
 
-            logger.info("Procuct %s: [%s/%s Misses(%s)]" %
+            logger.info("Product %s: [%s/%s Misses(%s)]" %
                 (product_code, assigned, ordered, ordered - assigned))
 
             if assigned:
@@ -215,7 +215,10 @@ class Sale:
                             'party': party_err,
                             }])
             logger.info("Sale of party %s not accepted." % party_err)
-            return {'error': msg_error}
+            return {
+                'error': msg_error,
+                'missingStock': missing_stock
+            }
         cls.process_fedicom_sales(sales)
         for sale in sales:
             logger.info("Order confirmed %s" % sale.rec_name)
