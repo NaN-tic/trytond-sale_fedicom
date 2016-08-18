@@ -42,7 +42,6 @@
 
         <record model="ir.model.access" id="access_sale_sale">
             <field name="model" search="[('model', '=', 'fedicom.configuration')]"/>
-            <field name="group" ref="group_sale_fedicom"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
             <field name="perm_create" eval="True"/>
