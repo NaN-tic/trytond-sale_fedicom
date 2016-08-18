@@ -2,10 +2,10 @@
 <tryton>
     <data>
         <record model="ir.ui.view" id="view_party_fedicom_form">
-            <field name="name">party_form</field>
             <field name="model">party.party</field>
+            <field name="type" eval="None"/>
             <field name="inherit" ref="party.party_view_form" />
-            <field name="type">form</field>
+            <field name="name">party_form</field>
         </record>
         
         
