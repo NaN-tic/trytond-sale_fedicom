@@ -21,12 +21,6 @@
             <field name="type">form</field>
         </record>
 
-        <record model="ir.ui.menu-res.group"
-            id="menu_config_group_sale_fedicom">
-            <field name="menu" ref="menu_fedicom_configuration"/>
-            <field name="group" ref="group_sale_fedicom"/>
-        </record>
-
         <record model="ir.action.act_window" id="act_fedicom_configuration">
             <field name="name">Fedicom Configuration</field>
             <field name="res_model">fedicom.configuration</field>
