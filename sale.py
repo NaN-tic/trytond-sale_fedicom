@@ -59,19 +59,19 @@ class Sale:
 
     @classmethod
     def process_order(cls, sales, customer_code, password, order, products):
-        try:
+        # try:
             return cls.process_order_internal(sales, customer_code, password,
                 order, products)
-        except Exception, e:
-            exc_type, exc_value = sys.exc_info()[:2]
-            logger = logging.getLogger('sale_fedicom')
-            logger.warning("Exception processing fedicom order: %s (%s)\n  %s"
-                % (exc_type, exc_value, traceback.format_exc()))
+        # except Exception, e:
+        #     exc_type, exc_value = sys.exc_info()[:2]
+        #     logger = logging.getLogger('sale_fedicom')
+        #     logger.warning("Exception processing fedicom order: %s (%s)\n  %s"
+        #         % (exc_type, exc_value, traceback.format_exc()))
 
-            # Ensure we free table lock
-            print "Process Order Internal ha petat :("
-            print str(e)
-            return {"error": 'Error Intern'}
+        #     # Ensure we free table lock
+        #     print "Process Order Internal ha petat :("
+        #     print str(e)
+        #     return {"error": 'Error Intern'}
 
     # Processes an incoming order request
     # products format: [('product_code', amount), ]
@@ -120,13 +120,12 @@ class Sale:
             logger.info("Invalid password for user %s " % customer_code)
             return {'error': cls.raise_user_error('incorrect_login',
                     raise_exception=False)}
-        sale = {
-            'state': 'draft',
-            'party': party.id,
-            }
 
-        sale.update(cls(party=party).on_change_party())
-        cls.remove_rec_names(sale)
+        sale = cls(
+            party=party,
+            state='draft',
+            )
+        sale.on_change_party()
         # We'll keep the sum of assigned units per product as there might be
         # a product in more than one line (or the same product with different
         # codes due to synonyms) We'll substract this amount to the available
@@ -176,20 +175,14 @@ class Sale:
                 (product_code, assigned, ordered, ordered - assigned))
 
             if assigned:
-                lvals = {
-                    'product': product.id,
-                    'quantity': assigned,
-                    'type': 'line',
-                    'sequence': len(lines) + 1,
-                    }
-                lvals.update(SaleLine(product=product, sale=None, unit=None,
-                        quantity=None, description=None).on_change_product())
-                cls.remove_rec_names(lvals)
-                if lvals.get('taxes'):
-                    lvals['taxes'] = [('add', lvals['taxes'])]
-                del lvals['amount']
-
-                lines.append(lvals)
+                line = SaleLine()
+                line.quantity = assigned
+                line.type = 'line'
+                line.sequence = len(lines) + 1
+                line.product = product
+                line.on_change_product()
+                line.amount = None
+                lines.append(line)
 
         logger.info("Process Lines Finished")
 
@@ -235,12 +228,12 @@ class Sale:
         Config = pool.get('fedicom.configuration')
         config = Config(1)
 
-        sale['lines'] = [('create', lines)]
-        sale['from_fedicom'] = True
-        if not 'warehouse' in sale or not sale.get('warehouse', False): 
-            sale['warehouse'] = config.warehouse
-        sales = cls.create([sale])
-        return sales
+        sale.lines = lines
+        sale.from_fedicom = True
+        if not getattr(sale, 'warehouse', False):
+            sale.warehouse = config.warehouse
+        sale.save()
+        return [sale]
 
     @classmethod
     def process_fedicom_sales(cls, sales):
