@@ -59,19 +59,19 @@ class Sale:
 
     @classmethod
     def process_order(cls, sales, customer_code, password, order, products):
-        # try:
+        try:
             return cls.process_order_internal(sales, customer_code, password,
                 order, products)
-        # except Exception, e:
-        #     exc_type, exc_value = sys.exc_info()[:2]
-        #     logger = logging.getLogger('sale_fedicom')
-        #     logger.warning("Exception processing fedicom order: %s (%s)\n  %s"
-        #         % (exc_type, exc_value, traceback.format_exc()))
+        except Exception, e:
+            exc_type, exc_value = sys.exc_info()[:2]
+            logger = logging.getLogger('sale_fedicom')
+            logger.warning("Exception processing fedicom order: %s (%s)\n  %s"
+                % (exc_type, exc_value, traceback.format_exc()))
 
-        #     # Ensure we free table lock
-        #     print "Process Order Internal ha petat :("
-        #     print str(e)
-        #     return {"error": 'Error Intern'}
+            # Ensure we free table lock
+            print "Process Order Internal ha petat :("
+            print str(e)
+            return {"error": 'Error Intern'}
 
     # Processes an incoming order request
     # products format: [('product_code', amount), ]
