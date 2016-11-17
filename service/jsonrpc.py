@@ -1,18 +1,20 @@
 #This file is part of Tryton.  The COPYRIGHT file at the top level of
 #this repository contains the full copyright notices and license terms.
-
-import xmlrpclib
+try:
+    import cStringIO as StringIO
+except ImportError:
+    from io import StringIO
 try:
     import simplejson as json
 except ImportError:
     import json
+import xmlrpclib
 import ssl
 import httplib
 from decimal import Decimal
 import datetime
 import socket
 import gzip
-import StringIO
 import hashlib
 import sys
 import base64
