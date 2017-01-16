@@ -20,7 +20,7 @@ class Socket:
             self.socket.settimeout(120)
 
     def connect(self, host='localhost', port=5000):
-        self.socket.connect(host, port)
+        self.socket.connect((host, port))
 
     def disconnect(self):
         self.socket.shutdown(SHUT_RDWR)

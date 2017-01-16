@@ -9,6 +9,7 @@ class InitSession(Message):
     def __init__(self, usercode='', password=None, date=None):
         self.next_message = [
             '1010',  # OrderHeader
+            '2010',  # IncidenceHeader
             '0199'   # CloseSession
         ]
         self.code = messages['INIT_SESSION_CODE']
