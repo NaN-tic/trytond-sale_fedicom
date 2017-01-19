@@ -52,7 +52,7 @@ class Sale:
             'user_not_exists': 'User code (%s) not Exists',
             'incorrect_login': 'Incorrect Login User',
             'incorrect_password': 'Incorrect Password (%s)',
-            'no_products': 'El pedido no ha podido assignar ningun Producto',
+            'no_products': 'Can not assign any product in sale',
             })
 
     @staticmethod

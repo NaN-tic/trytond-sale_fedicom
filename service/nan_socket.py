@@ -43,8 +43,8 @@ class Socket:
                 if len(ch) == 0:
                     log.notifyChannel("nan_socket.py",
                         logger.LOG_INFO,
-                        "L'altre extrem ha tancat la connexió. "
-                        "La informació acumulada fins al moment era: '%s'" %
+                        "L'altre extrem ha tancat la connexiÃ³. "
+                        "La informaciÃ³ acumulada fins al moment era: '%s'" %
                          data)
                     return None
                 print "rebuda info al socket"
