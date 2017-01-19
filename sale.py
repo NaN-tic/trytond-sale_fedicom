@@ -11,7 +11,6 @@ from trytond.pool import Pool, PoolMeta
 from trytond.rpc import RPC
 from trytond.transaction import Transaction
 
-__metaclass__ = PoolMeta
 
 __all__ = ['Party', 'Sale', 'FedicomConfig', 'FedicomLog']
 
@@ -32,6 +31,7 @@ def convertToInt(value):
 
 
 class Party:
+    __metaclass__ = PoolMeta
     __name__ = 'party.party'
 
     fedicom_user = fields.Char('Fedicom User')
@@ -39,6 +39,7 @@ class Party:
 
 
 class Sale:
+    __metaclass__ = PoolMeta
     __name__ = 'sale.sale'
 
     @classmethod
