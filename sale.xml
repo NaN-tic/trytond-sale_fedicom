@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <tryton>
-	<data>
-
+    <data>
         <record model="res.group" id="group_sale_fedicom">
             <field name="name">Sale Fedicom</field>
         </record>
@@ -16,25 +15,24 @@
             <field name="group" ref="group_sale_fedicom"/>
         </record>
 
-		<record model="ir.ui.view" id="view_party_fedicom_form">
-			<field name="name">party_form</field>
-			<field name="model">party.party</field>
+        <record model="ir.ui.view" id="view_party_fedicom_form">
+            <field name="name">party_form</field>
+            <field name="model">party.party</field>
             <field name="inherit" ref="party.party_view_form" />
-			<field name="type">form</field>
-		</record>
+            <field name="type">form</field>
+        </record>
 
+        <record model="ir.ui.view" id="view_fedicom_log_tree">
+            <field name="name">fedicom_log_tree</field>
+            <field name="model">fedicom.log</field>
+            <field name="type">tree</field>
+        </record>
 
-		<record model="ir.ui.view" id="view_fedicom_log_tree">
-			<field name="name">fedicom_log_tree</field>
-			<field name="model">fedicom.log</field>
-			<field name="type">tree</field>
-		</record>
-
-		<record model="ir.ui.view" id="view_fedicom_log_form">
-			<field name="name">fedicom_log_form</field>
-			<field name="model">fedicom.log</field>
-			<field name="type">form</field>
-		</record>
+        <record model="ir.ui.view" id="view_fedicom_log_form">
+            <field name="name">fedicom_log_form</field>
+            <field name="model">fedicom.log</field>
+            <field name="type">form</field>
+        </record>
 
         <record model="ir.action.act_window" id="act_fedicom_log">
             <field name="name">Fedicom Log</field>
@@ -51,11 +49,11 @@
             <field name="act_window" ref="act_fedicom_log"/>
         </record>
 
-		<record model="ir.ui.view" id="view_fedicom_config_form">
-			<field name="name">fedicom_config_form</field>
-			<field name="model">fedicom.config</field>
-			<field name="type">form</field>
-		</record>
+        <record model="ir.ui.view" id="view_fedicom_config_form">
+            <field name="name">fedicom_config_form</field>
+            <field name="model">fedicom.config</field>
+            <field name="type">form</field>
+        </record>
 
         <record model="ir.action.act_window" id="act_fedicom_config">
             <field name="name">Fedicom Config</field>
@@ -98,6 +96,5 @@
             <field name="perm_create" eval="True"/>
             <field name="perm_delete" eval="True"/>
         </record>
-
     </data>
 </tryton>
