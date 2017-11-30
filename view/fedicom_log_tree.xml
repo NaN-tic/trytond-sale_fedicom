@@ -3,7 +3,8 @@
      copyright notices and license terms. -->
 <tree string="Fedicom Log">
     <field name="message"/>
-    <field name="timestamp"/>
+    <field name="timestamp" widget="date"/>
+    <field name="timestamp" widget="time"/>
     <field name="sale"/>
     <field name="party"/>
 </tree>
