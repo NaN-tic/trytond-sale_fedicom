@@ -8,6 +8,12 @@ class IncidenceOrderLine(Message):
 
     def __init__(self, article_code=None, amount=None,
       not_served=None, code=None):
+        self.next_message = [
+            '2011',  # IncidenceFreeText
+            '2015',  # IncidenceLine
+            '2016',  # IncidenceCycleDifferent
+            '0199',  # CloseSession
+        ]
 
         self.code = messages['INCIDENCE_ORDER_LINE_CODE']
         self.subcode = messages['INCIDENCE_ORDER_LINE_SUBCODE']
@@ -35,11 +41,25 @@ class IncidenceOrderLine(Message):
           'SANITY_REMOVED': '14'
         }
 
+    def next_state(self):
+        return self.next_message
+
     def set_order_line(self, orderline):
         self.article_code = orderline.article_code
         self.amount = orderline.amount
         self.amount_not_served = orderline.amount_not_served
         self.incidence_code = orderline.incidence_type
+
+    def set_msg(self, msg):
+        self.code = msg[0:2]
+        self.subcode = msg[2:4]
+        self.article_code = msg[4:17].strip()
+        self.amount = msg[17:21]
+        self.amount_not_served = msg[21:25]
+        self.bonus = msg[25:29]
+        self.bonus_not_served = msg[29:33]
+        self.incidence_code = msg[33:35]
+        self.article_alternative = msg[35:48]
 
     def __str__(self):
         return messages['INCIDENCE_ORDER_LINE_CODE'] + \
