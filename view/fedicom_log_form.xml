@@ -5,10 +5,7 @@
     <label name="message"/>
     <field name="message"/>
     <label name="timestamp" />
-    <group cols="2" colspan="1">
-      <field name="timestamp" widget="date"/>
-      <field name="timestamp" widget="time"/>
-    </group>
+    <field name="timestamp"/>
     <label name="sale"/>
     <field name="sale"/>
     <label name="party"/>
