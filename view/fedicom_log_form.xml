@@ -4,7 +4,7 @@
 <form string="Fedicom Log">
     <label name="message"/>
     <field name="message"/>
-    <label name="timestamp" />
+    <label name="timestamp"/>
     <field name="timestamp"/>
     <label name="sale"/>
     <field name="sale"/>
