@@ -1,10 +1,12 @@
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
-
 import logging
 import os
-import config
 import sys
+from trytond.config import config
+config.update_etc(os.environ.get('TRYTOND_CONFIG'))
+
+LOGF = config.get('fedicom', 'logconf', default='/tmp/fedicom.log')
 
 
 class Logger(object):
@@ -21,13 +23,12 @@ LOG_CRITICAL = 'critical'
 
 def init_logger():
     if True:
-        logf = config.LOG
         # test if the directories exist, else create them
         try:
-            if not os.path.exists(os.path.dirname(logf)):
-                os.makedirs(os.path.dirname(logf))
+            if not os.path.exists(os.path.dirname(LOGF)):
+                os.makedirs(os.path.dirname(LOGF))
             try:
-                fd = open(logf, 'a')
+                fd = open(LOGF, 'a')
                 handler = logging.StreamHandler(fd)
             except IOError:
                 sys.stderr.write("ERROR: couldn't open the logfile\n")

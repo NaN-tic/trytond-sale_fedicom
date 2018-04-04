@@ -1,7 +1,7 @@
 # encoding: utf-8
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
-
+import os
 import threading
 from _socket import *
 import logger
@@ -15,8 +15,13 @@ from messages.order_line import OrderLine
 from messages.order import Order
 from messages.reject_transmission import RejectTransmission
 
-#import xmlrpclib
-from jsonrpc import ServerProxy
+from trytond.config import config, parse_uri
+config.update_etc(os.environ.get('TRYTOND_CONFIG'))
+from trytond.transaction import Transaction
+from trytond.pool import Pool
+
+FEDICOM_USER = config.getint('fedicom', 'user', default=1)
+
 
 log = logger.Logger()
 
@@ -59,7 +64,7 @@ class ClientThread(threading.Thread):
                 self.threads.remove(self)
                 return False
         print "processant el missatge"
-        # Es pot rebre None per algun error en la recepció o perquè no s'ha
+        # Es pot rebre None per algun error en la recepciÃ³ o perquÃ¨ no s'ha
         #rebut res en acabat el timeout
         if msg is None:
             log.notifyChannel("clientthread.py", logger.LOG_CRITICAL,
@@ -161,62 +166,58 @@ class ClientThread(threading.Thread):
 
     def process_order(self, user, password, orders):
         log.notifyChannel("clientthread.py", logger.LOG_INFO, "1")
-        import config
 
-        osock = ServerProxy(config.server, config.port, database=config.db)
-        log.notifyChannel("clientthread.py", logger.LOG_INFO, "2")
-
-        try:
-            trytonuser, session = osock.common.db.login(config.user,
-                config.password)
-        except:
+        uri = parse_uri(config.get('database', 'uri'))
+        dbname = uri.path[1:]
+        if dbname:
             log.notifyChannel("clientthread.py", logger.LOG_INFO,
-               "Login incorrecte")
+                'Database: %s' % dbname)
+        else:
+            log.notifyChannel("clientthread.py", logger.LOG_ERROR, 'Not found '
+                'trytond.conf file in TRYTOND_CONFIG env or empty database uri')
             return
 
-        context = osock.model.res.user.get_preferences(trytonuser, session,
-            True, {})
-        log.notifyChannel("clientthread.py", logger.LOG_INFO, "3")
-        if not context:
-            log.notifyChannel("clientthread.py", logger.LOG_INFO,
-               "No s'ha pogut obtenir el context")
+        Pool.start()
+        pool = Pool(dbname)
+        pool.init()
 
-        log.notifyChannel("clientthread.py", logger.LOG_INFO,
-            'Processant comandes...')
         send = {}
-        for order in orders:
-            orders_to_send = self.to_send_order_lines(orders[order])
-            result = osock.model.sale.sale.process_order(trytonuser, session,
-                [], user.strip(), password.strip(), order, orders_to_send,
-                context)
-            log.notifyChannel("clientthread.py", logger.LOG_INFO, 'Comanda '
-                   'Processada, generant resposta... %s' % result)
-            misses = []
-            current_order = orders[order]
-            reject_transmission = None
-            if result.get('error', False):
-                log.notifyChannel("clientthread.py", logger.LOG_INFO,
-                   result['error'])
-                reject_transmission = RejectTransmission(result['error'])
-            else:
-                for miss in result['missingStock']:
-                    (article, not_served, reason) = miss
-                    amount = current_order[article]
-                    #print article,self.article[article]
-                    log.notifyChannel("clientthread.py", logger.LOG_INFO,
-                        "Comanda %s, Article %s, Demanat:%s, No Servit %s, "
-                        "Rao:%s " % (str(order), str(article),
-                            str(int(amount)), str(int(not_served)),
-                            str(reason)))
-                    iline = IncidenceOrderLine(self.article[article],
-                        int(amount), int(not_served), reason)
-                    misses.append(iline)
+        context = {'active_test': False}
+        with Transaction().start(dbname, FEDICOM_USER, context=context):
+            Sale = pool.get('sale.sale')
 
-            send[order] = {}
-            send[order]['order'] = orders[order]
-            send[order]['misses'] = misses
-            if reject_transmission is not None:
-                send[order]['error'] = reject_transmission
+            for order in orders:
+                orders_to_send = self.to_send_order_lines(orders[order])
+                result = Sale.process_order([], user.strip(), password.strip(),
+                    order, orders_to_send)
+                log.notifyChannel("clientthread.py", logger.LOG_INFO, 'Comanda '
+                       'Processada, generant resposta... %s' % result)
+                misses = []
+                current_order = orders[order]
+                reject_transmission = None
+                if result.get('error', False):
+                    log.notifyChannel("clientthread.py", logger.LOG_INFO,
+                       result['error'])
+                    reject_transmission = RejectTransmission(result['error'])
+                else:
+                    for miss in result['missingStock']:
+                        (article, not_served, reason) = miss
+                        amount = current_order[article]
+                        #print article,self.article[article]
+                        log.notifyChannel("clientthread.py", logger.LOG_INFO,
+                            "Comanda %s, Article %s, Demanat:%s, No Servit %s, "
+                            "Rao:%s " % (str(order), str(article),
+                                str(int(amount)), str(int(not_served)),
+                                str(reason)))
+                        iline = IncidenceOrderLine(self.article[article],
+                            int(amount), int(not_served), reason)
+                        misses.append(iline)
+
+                send[order] = {}
+                send[order]['order'] = orders[order]
+                send[order]['misses'] = misses
+                if reject_transmission is not None:
+                    send[order]['error'] = reject_transmission
 
             self.send_data(send)
 
