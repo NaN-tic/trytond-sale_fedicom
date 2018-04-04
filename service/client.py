@@ -35,7 +35,7 @@ def sendOrder():
 log = logger.Logger()
 
 host = 'localhost'
-port = 60000
+port = 1234
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.connect((host, port))
