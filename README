@@ -31,6 +31,8 @@ Default file logs is /tmp/fedicom.log. In case you want to change the path
 of the log file, you can define a section in trytond.conf file:
 
   [fedicom]
+  # Fedicom port, where are listening calls
+  port = 1234
   # File where the server print the logs
   logconf = /var/log/my-fedicom.log
   # fedicom user to create sales
