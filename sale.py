@@ -136,7 +136,11 @@ class Sale:
         missing_stock = []
         lines = []
         for prod in products:
-            logger.info("Process: %s" % prod)
+            if len(prod) > 1:
+                logger.info("Process: product code %s, qty %s" % (
+                        prod[0], str(prod[1])))
+            elif len(prod) == 1:
+                logger.info("Process: %s" % prod)
             product = None
             product_available = None
             # Search the product code within the products
