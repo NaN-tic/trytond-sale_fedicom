@@ -2,17 +2,36 @@ GENERAL DESCRIPTION
 
 This is an Tryton module for managing needs to handle incomming
 orders that use the TCP/IP Fedicom protocol. This is a standard protocol in the
-pharmaceutical business in Spain. The protocol itself is implemented somewhere 
+pharmaceutical business in Spain. The protocol itself is implemented somewhere
 else and this module simply handles orders reception, calculates units available
 and returns the quantity the customer will receive.
-
-
 
 TECHNICAL DESCRIPTION
 
 The most important functionalities of the module are:
-- Process Internet orders and return unserved units.
-- Update modem incoming orders into our Tryton database to keep in sync our stock. This should
-be executed every minute by the cron job framework of Tryton and just before any new Internet
-order is processed.
 
+- Process Internet orders and return unserved units.
+- Update modem incoming orders into our Tryton database to keep in sync our stock.
+  This should be executed every minute by the cron job framework of Tryton and
+  just before any new Internet order is processed.
+
+SERVER
+
+Available fedicom services in "service" directory.
+
+To run Fedicom client:
+
+  export PYTHONPATH=<path>/trytond
+  export TRYTOND_CONFIG=<path>/trytond.conf
+  python sale_fedicom/services/fedicom_service.py
+
+LOGS
+
+Default file logs is /tmp/fedicom.log. In case you want to change the path
+of the log file, you can define a section in trytond.conf file:
+
+  [fedicom]
+  # File where the server print the logs
+  logconf = /var/log/my-fedicom.log
+  # fedicom user to create sales
+  user = 1
