@@ -1,7 +1,7 @@
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
 
-from message import *
+from .message import *
 
 
 class IncidenceHeader(Message):

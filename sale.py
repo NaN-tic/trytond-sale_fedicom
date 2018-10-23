@@ -22,14 +22,14 @@ def convertToInt(value):
         return 0
 
 
-class Party:
+class Party(metaclass=PoolMeta):
     __name__ = 'party.party'
 
     fedicom_user = fields.Char('Fedicom User')
     fedicom_password = fields.Char('Fedicom password')
 
 
-class Sale:
+class Sale(metaclass=PoolMeta):
     __name__ = 'sale.sale'
 
     from_fedicom = fields.Boolean('Is Fedicom Sale?')
@@ -53,7 +53,7 @@ class Sale:
 
     @staticmethod
     def remove_rec_names(values):
-        for key in values.copy().keys():
+        for key in list(values.copy().keys()):
             if '.rec_name' in key:
                 del values[key]
 
@@ -62,15 +62,15 @@ class Sale:
         try:
             return cls.process_order_internal(sales, customer_code, password,
                 order, products)
-        except Exception, e:
+        except Exception as e:
             exc_type, exc_value = sys.exc_info()[:2]
             logger = logging.getLogger('sale_fedicom')
             logger.warning("Exception processing fedicom order: %s (%s)\n  %s"
                 % (exc_type, exc_value, traceback.format_exc()))
 
             # Ensure we free table lock
-            print "Process Order Internal ha petat :("
-            print str(e)
+            print("Process Order Internal ha petat :(")
+            print(str(e))
             return {"error": 'Error Intern'}
 
     # Processes an incoming order request

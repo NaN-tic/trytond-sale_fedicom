@@ -1,12 +1,12 @@
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
 
-import logger
-from messages.close_session import *
-from messages.init_session import *
-from messages.order import *
-from messages.order_line import *
-from messages.finish_order import *
+from . import logger
+from .messages.close_session import *
+from .messages.init_session import *
+from .messages.order import *
+from .messages.order_line import *
+from .messages.finish_order import *
 import socket
 
 user = 'user'
@@ -48,6 +48,6 @@ sock.close()
 data_list = data.split('\r\n')
 
 for msg in data_list:
-    print msg
+    print(msg)
 
 exit(0)

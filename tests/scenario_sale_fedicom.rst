@@ -139,7 +139,7 @@ Create an Inventory::
     >>> inventory_line.save()
     >>> Inventory.confirm([inventory.id], config.context)
     >>> inventory.state
-    u'done'
+    'done'
 
 Create sales from fedicom::
 
@@ -164,11 +164,11 @@ Create sales from fedicom::
     >>> sum(x.quantity for x in sale.lines) == 5
     True
     >>> sale.state
-    u'processing'
+    'processing'
     >>> sale.shipment_state
-    u'waiting'
+    'waiting'
     >>> sale.shipments[0].state
-    u'assigned'
+    'assigned'
     >>> products = [['1234567', 3], ['2345678', 2], ['2345678', 3]]
     >>> ret = Sale.process_order([],'xxxx','xxxx','FEDI2', products,
     ...     config.context)
@@ -184,11 +184,11 @@ Create sales from fedicom::
     >>> sum(x.quantity for x in sale.lines) == 8
     True
     >>> sale.state
-    u'processing'
+    'processing'
     >>> sale.shipment_state
-    u'waiting'
+    'waiting'
     >>> sale.shipments[0].state
-    u'assigned'
+    'assigned'
 
 Test missing stocks::
 
@@ -209,11 +209,11 @@ Test missing stocks::
     >>> sum(x.quantity for x in sale.lines) == 7
     True
     >>> sale.state
-    u'processing'
+    'processing'
     >>> sale.shipment_state
-    u'waiting'
+    'waiting'
     >>> sale.shipments[0].state
-    u'assigned'
+    'assigned'
     >>> products = [['1234567', 5], ['2345678', 5]]
     >>> ret = Sale.process_order([],'xxxx','xxxx','FEDI4', products,
     ...     config.context)

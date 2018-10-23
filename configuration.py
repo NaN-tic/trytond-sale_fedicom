@@ -3,7 +3,6 @@
 import logging
 import subprocess
 from trytond.model import Model, ModelView, ModelSQL, ModelSingleton, fields
-from trytond.pyson import Eval
 from trytond.pool import Pool
 from trytond.transaction import Transaction
 

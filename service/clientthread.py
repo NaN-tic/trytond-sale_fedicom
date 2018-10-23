@@ -4,16 +4,16 @@
 import os
 import threading
 from _socket import *
-import logger
-from nan_socket import *
-from messages.init_session import InitSession
-from messages.close_session import CloseSession
-from messages.finish_order import FinishOrder
-from messages.incidence_header import IncidenceHeader
-from messages.incidence_order_line import IncidenceOrderLine
-from messages.order_line import OrderLine
-from messages.order import Order
-from messages.reject_transmission import RejectTransmission
+from . import logger
+from .nan_socket import *
+from .messages.init_session import InitSession
+from .messages.close_session import CloseSession
+from .messages.finish_order import FinishOrder
+from .messages.incidence_header import IncidenceHeader
+from .messages.incidence_order_line import IncidenceOrderLine
+from .messages.order_line import OrderLine
+from .messages.order import Order
+from .messages.reject_transmission import RejectTransmission
 
 from trytond.config import config, parse_uri
 config.update_etc(os.environ.get('TRYTOND_CONFIG'))
@@ -43,7 +43,7 @@ class ClientThread(threading.Thread):
         self.running = True
         try:
             self.ts = Socket(self.socket)
-        except Exception, e:
+        except Exception as e:
             log.notifyChannel("clientthread.py", logger.LOG_CRITICAL,
                 'Error obrint el socket, %s' % (e))
             self.socket.close()
@@ -52,18 +52,18 @@ class ClientThread(threading.Thread):
 
         while self.running:
             try:
-                print "Esperant dades en el client"
+                print("Esperant dades en el client")
                 msg = self.ts.recieve()
                 self.running = False
-                print "rebut", msg
+                print("rebut", msg)
                 break
-            except Exception, e:
+            except Exception as e:
                 log.notifyChannel("clientthread.py", logger.LOG_CRITICAL,
                     'Error al rebre les dades, %s' % (e))
                 self.socket.close()
                 self.threads.remove(self)
                 return False
-        print "processant el missatge"
+        print("processant el missatge")
         # Es pot rebre None per algun error en la recepció o perquè no s'ha
         #rebut res en acabat el timeout
         if msg is None:
@@ -160,7 +160,7 @@ class ClientThread(threading.Thread):
 
     def to_send_order_lines(self, orderlines):
         lines = []
-        for k, v in orderlines.iteritems():
+        for k, v in orderlines.items():
             lines.append((k, v))
         return lines
 
@@ -223,7 +223,7 @@ class ClientThread(threading.Thread):
 
     def send_data(self, send_data):
         result = str(InitSession(self.user, self.password, self.date))
-        for k, order in send_data.iteritems():
+        for k, order in send_data.items():
             if order.get('error', False):
                 self.ts.send(str(order['error']) + str(CloseSession("")))
                 return

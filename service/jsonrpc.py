@@ -1,16 +1,16 @@
 #This file is part of Tryton.  The COPYRIGHT file at the top level of
 #this repository contains the full copyright notices and license terms.
 try:
-    import cStringIO as StringIO
+    import io as StringIO
 except ImportError:
     from io import StringIO
 try:
     import simplejson as json
 except ImportError:
     import json
-import xmlrpclib
+import xmlrpc.client
 import ssl
-import httplib
+import http.client
 from decimal import Decimal
 import datetime
 import socket
@@ -18,6 +18,7 @@ import gzip
 import hashlib
 import sys
 import base64
+from functools import reduce
 
 __all__ = ["ResponseError", "Fault", "ProtocolError", "Transport",
     "ServerProxy"]
@@ -25,11 +26,11 @@ CONNECT_TIMEOUT = 5
 DEFAULT_TIMEOUT = None
 
 
-class ResponseError(xmlrpclib.ResponseError):
+class ResponseError(xmlrpc.client.ResponseError):
     pass
 
 
-class Fault(xmlrpclib.Fault):
+class Fault(xmlrpc.client.Fault):
 
     def __init__(self, faultCode, faultString='', **extra):
         super(Fault, self).__init__(faultCode, faultString, **extra)
@@ -42,7 +43,7 @@ class Fault(xmlrpclib.Fault):
             )
 
 
-class ProtocolError(xmlrpclib.ProtocolError):
+class ProtocolError(xmlrpc.client.ProtocolError):
     pass
 
 
@@ -124,13 +125,13 @@ class JSONUnmarshaller(object):
         return json.loads(self.data, object_hook=object_hook)
 
 
-class Transport(xmlrpclib.Transport, xmlrpclib.SafeTransport):
+class Transport(xmlrpc.client.Transport, xmlrpc.client.SafeTransport):
 
     accept_gzip_encoding = True
     encode_threshold = 1400  # common MTU
 
     def __init__(self, fingerprints=None, ca_certs=None):
-        xmlrpclib.Transport.__init__(self)
+        xmlrpc.client.Transport.__init__(self)
         self._connection = (None, None)
         self.__fingerprints = fingerprints
         self.__ca_certs = ca_certs
@@ -141,7 +142,7 @@ class Transport(xmlrpclib.Transport, xmlrpclib.SafeTransport):
         return parser, target
 
     def get_host_info(self, host):
-        host, extra_headers, x509 = xmlrpclib.Transport.get_host_info(
+        host, extra_headers, x509 = xmlrpc.client.Transport.get_host_info(
             self, host)
         if extra_headers is None:
             extra_headers = []
@@ -173,7 +174,7 @@ class Transport(xmlrpclib.Transport, xmlrpclib.SafeTransport):
         ca_certs = self.__ca_certs
         cert_reqs = ssl.CERT_REQUIRED if ca_certs else ssl.CERT_NONE
 
-        class HTTPSConnection(httplib.HTTPSConnection):
+        class HTTPSConnection(http.client.HTTPSConnection):
 
             def connect(self):
                 sock = socket.create_connection((self.host, self.port),
@@ -185,7 +186,7 @@ class Transport(xmlrpclib.Transport, xmlrpclib.SafeTransport):
                     self.cert_file, ca_certs=ca_certs, cert_reqs=cert_reqs)
 
         def http_connection():
-            self._connection = host, httplib.HTTPConnection(host,
+            self._connection = host, http.client.HTTPConnection(host,
                 timeout=CONNECT_TIMEOUT)
             self._connection[1].connect()
             sock = self._connection[1].sock
@@ -268,7 +269,7 @@ class Transport(xmlrpclib.Transport, xmlrpclib.SafeTransport):
             return self._parse_response(response, sock)
 
         def send_request(self, connection, handler, request_body):
-            xmlrpclib.Transport.send_request(self, connection, handler,
+            xmlrpc.client.Transport.send_request(self, connection, handler,
                 request_body)
             connection.putheader("Accept-Encoding", "gzip")
 
@@ -278,7 +279,7 @@ class Transport(xmlrpclib.Transport, xmlrpclib.SafeTransport):
                 self._connection = (None, None)
 
 
-class ServerProxy(xmlrpclib.ServerProxy):
+class ServerProxy(xmlrpc.client.ServerProxy):
     __id = 0
 
     def __init__(self, host, port, database='', verbose=0,
@@ -304,7 +305,7 @@ class ServerProxy(xmlrpclib.ServerProxy):
                 request,
                 verbose=self.__verbose
                 )
-        except (socket.error, httplib.HTTPException), v:
+        except (socket.error, http.client.HTTPException) as v:
             # trap  'Broken pipe'
             if isinstance(v, socket.error) and v.args[0] != 32:
                 raise
@@ -333,4 +334,4 @@ class ServerProxy(xmlrpclib.ServerProxy):
     @property
     def ssl(self):
         return isinstance(self.__transport.make_connection(self.__host),
-            httplib.HTTPSConnection)
+            http.client.HTTPSConnection)

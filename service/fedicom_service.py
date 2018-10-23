@@ -1,8 +1,8 @@
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
 #!/usr/bin/python
-import server
-import logger
+from . import server
+from . import logger
 import os
 from trytond.config import config
 config.update_etc(os.environ.get('TRYTOND_CONFIG'))
