@@ -131,10 +131,12 @@ class Sale:
         # codes due to synonyms) We'll substract this amount to the available
         # stock to be sure we don't go under zero because the stock is
         # substracted once after processing all lines.
-
         assigned_products = {}
         missing_stock = []
         lines = []
+
+        location_ids = [x.storage_location.id for x in
+            Location.search([('type', '=', 'warehouse')])]
         for prod in products:
             if len(prod) > 1:
                 logger.info("Process: product code %s, qty %s" % (
@@ -144,16 +146,15 @@ class Sale:
             product = None
             product_available = None
             # Search the product code within the products
-            search_products = Product.search([
-                    ('code', '=', str(prod[0][-7:]))])
+            with Transaction().set_context(locations=location_ids):
+                search_products = Product.search([
+                        ('code', '=', str(prod[0][-7:])),
+                        ])
 
             product_code = str(prod[0][-7:]).rjust(7, '0')
             if len(search_products) > 0:
                 product = search_products[0]
-                location_ids = [x.storage_location.id for x in
-                    Location.search([('type', '=', 'warehouse')])]
-                with Transaction().set_context(locations=location_ids):
-                    product_available = int(product.forecast_quantity) or 0
+                product_available = int(product.forecast_quantity) or 0
 
             ordered = convertToInt(prod[1])
             if not product:

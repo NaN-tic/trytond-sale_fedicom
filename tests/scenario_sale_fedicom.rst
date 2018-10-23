@@ -9,25 +9,18 @@ Imports::
     >>> from decimal import Decimal
     >>> from operator import attrgetter
     >>> from proteus import config, Model, Wizard
+    >>> from trytond.tests.tools import activate_modules
     >>> from trytond.modules.company.tests.tools import create_company, \
     ...     get_company
     >>> from trytond.modules.account.tests.tools import create_fiscalyear, \
-    ...     create_chart, get_accounts, create_tax, set_tax_code
+    ...     create_chart, get_accounts, create_tax
     >>> from trytond.modules.account_invoice.tests.tools import \
     ...     set_fiscalyear_invoice_sequences, create_payment_term
     >>> today = datetime.date.today()
 
-Create database::
+Activate sale_fedicom::
 
-    >>> config = config.set_trytond()
-    >>> config.pool.test = True
-
-Install sale_fedicom::
-
-    >>> Module = Model.get('ir.module')
-    >>> sale_module, = Module.find([('name', '=', 'sale_fedicom')])
-    >>> Module.install([sale_module.id], config.context)
-    >>> Wizard('ir.module.install_upgrade').execute('upgrade')
+    >>> config = activate_modules('sale_fedicom')
 
 Create company::
 
@@ -74,13 +67,13 @@ Create product::
     >>> template.purchasable = True
     >>> template.salable = True
     >>> template.list_price = Decimal('10')
-    >>> template.cost_price = Decimal('5')
     >>> template.cost_price_method = 'fixed'
     >>> template.account_expense = expense
     >>> template.account_revenue = revenue
     >>> template.save()
-    >>> product.template = template
+    >>> product, = template.products
     >>> product.code = '1234567'
+    >>> product.cost_price = Decimal('5')
     >>> product.save()
     >>> product2 = Product()
     >>> template = ProductTemplate()
@@ -90,13 +83,13 @@ Create product::
     >>> template.purchasable = True
     >>> template.salable = True
     >>> template.list_price = Decimal('10')
-    >>> template.cost_price = Decimal('5')
     >>> template.cost_price_method = 'fixed'
     >>> template.account_expense = expense
     >>> template.account_revenue = revenue
     >>> template.save()
-    >>> product2.template = template
+    >>> product2, = template.products
     >>> product2.code = '2345678'
+    >>> product2.cost_price = Decimal('5')
     >>> product2.save()
 
 Get stock locations::
@@ -152,9 +145,8 @@ Create sales from fedicom::
     >>> products = [['1234567', 5]]
     >>> ret = Sale.process_order([],'xxxx','xxxx','FEDI', products,
     ...     config.context)
-
-    >>> len(ret['missingStock']) == 0
-    True
+    >>> len(ret['missingStock'])
+    0
     >>> sale, = Sale.find([])
     >>> len(sale.lines) == 1
     True
