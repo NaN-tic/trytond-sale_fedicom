@@ -35,7 +35,7 @@ class ServerThread(threading.Thread):
                 ct.start()
                 log.notifyChannel("server.py", logger.LOG_INFO,
                     'Thread iniciat')
-        except Exception, e:
+        except Exception as e:
             e.printstack()
             log.notifyChannel("server.py", logger.LOG_CRITICAL,
                 'Excepcion entrant un client %s' % e)

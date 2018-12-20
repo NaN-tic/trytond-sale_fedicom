@@ -56,7 +56,7 @@ class Socket:
                     print("Acabat de rebre")
                     break
 
-        except Exception, e:
+        except Exception as e:
             log.notifyChannel("nan_socket.py", logger.LOG_ERROR,
                 'Error rebent les dades, %s ' % e)
             return None
