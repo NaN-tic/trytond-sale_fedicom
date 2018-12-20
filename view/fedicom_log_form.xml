@@ -5,7 +5,8 @@
     <label name="message"/>
     <field name="message"/>
     <label name="timestamp"/>
-    <field name="timestamp"/>
+    <field name="timestamp" widget='date'/>
+    <field name="timestamp" widget='time'/>
     <label name="sale"/>
     <field name="sale"/>
     <label name="party"/>

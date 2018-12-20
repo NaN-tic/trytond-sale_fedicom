@@ -127,7 +127,6 @@ class ClientThread(threading.Thread):
                             'Processant capsalera comanda')
                         o = Order()
                         o.set_msg(msg)
-                      #  print "order",o.order_number,  o.next_state()
                         next_message = o.next_state()
                     elif msg.startswith('1020'):
                         log.notifyChannel("clientthread.py", logger.LOG_INFO,
@@ -203,7 +202,6 @@ class ClientThread(threading.Thread):
                     for miss in result['missingStock']:
                         (article, not_served, reason) = miss
                         amount = current_order[article]
-                        #print article,self.article[article]
                         log.notifyChannel("clientthread.py", logger.LOG_INFO,
                             "Comanda %s, Article %s, Demanat:%s, No Servit %s, "
                             "Rao:%s " % (str(order), str(article),
@@ -231,7 +229,6 @@ class ClientThread(threading.Thread):
             order['order']
             for miss in order['misses']:
                 result += str(miss)
-        #print result
         result += str(CloseSession(""))
         log.notifyChannel("clientthread.py", logger.LOG_INFO,
             "Resposta:%s" % result.replace("\r\n", "<lf><cr>\r\n"))

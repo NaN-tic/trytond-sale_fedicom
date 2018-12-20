@@ -36,24 +36,24 @@ class Socket:
             data += ch
             close = str(CloseSession())
             while True:
-                print "Esperant recepcio al socket"
+                print("Esperant recepcio al socket")
                 ch = self.socket.recv(1)
                 # When len(ch) == 0 it means the other end has
                 # closed the socket
                 if len(ch) == 0:
                     log.notifyChannel("nan_socket.py",
                         logger.LOG_INFO,
-                        "L'altre extrem ha tancat la connexió. "
-                        "La informació acumulada fins al moment era: '%s'" %
+                        "L'altre extrem ha tancat la connexio. "
+                        "La informacio acumulada fins al moment era: '%s'" %
                          data)
                     return None
-                print "rebuda info al socket"
+                print("rebuda info al socket")
                 data += ch
                 log.notifyChannel("nan_socket.py",
                     logger.LOG_DEBUG,
                     'Rebent les dades : %s :=> %s ' % (ch, data))
                 if data[len(data)-len(close):] == close:
-                    print " Acabat de rebre"
+                    print("Acabat de rebre")
                     break
 
         except Exception, e:
