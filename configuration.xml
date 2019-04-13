@@ -10,11 +10,6 @@
             <field name="group" ref="group_sale_fedicom"/>
         </record>
 
-        <record model="res.user-res.group" id="user_trigger_group_sale_fedicom">
-            <field name="user" ref="res.user_trigger"/>
-            <field name="group" ref="group_sale_fedicom"/>
-        </record>
-
         <record model="ir.ui.view" id="view_fedicom_configuration_form">
             <field name="name">fedicom_configuration_form</field>
             <field name="model">fedicom.configuration</field>
