@@ -1,0 +1,25 @@
+<tryton>
+    <data group="1">
+        <record model="ir.message" id="user_not_exists">
+            <field name="text">User code (%(code)s) not Exists</field>
+        </record>
+        <record model="ir.message" id="incorrect_login">
+            <field name="text">Incorrect Login User</field>
+        </record>
+        <record model="ir.message" id="incorrect_password">
+            <field name="text">Incorrect Password (%(password)s)</field>
+        </record>
+        <record model="ir.message" id="no_products">
+            <field name="text">El pedido no ha podido asignar ningún producto</field>
+        </record>
+        <record model="ir.message" id="test_failed">
+            <field name="text">Test Failed</field>
+        </record>
+        <record model="ir.message" id="test_ok">
+            <field name="text">Test Ok</field>
+        </record>
+        <record model="ir.message" id="restart_server">
+            <field name="text">Please try to restart server</field>
+        </record>
+    </data>
+</tryton>

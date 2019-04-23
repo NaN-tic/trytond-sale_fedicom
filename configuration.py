@@ -5,6 +5,8 @@ import subprocess
 from trytond.model import Model, ModelView, ModelSQL, ModelSingleton, fields
 from trytond.pool import Pool
 from trytond.transaction import Transaction
+from trytond.i18n import gettext
+from trytond.exceptions import UserError
 
 __all_ = ['FedicomConfiguration', 'FedicomConfigurationCompany']
 
@@ -32,11 +34,6 @@ class FedicomConfiguration(ModelSingleton, ModelSQL, ModelView):
         cls._buttons.update({
             'test': {},
             'restart': {},
-            })
-        cls._error_messages.update({
-            'test_failed': 'Test Failed',
-            'test_ok': 'Test Ok',
-            'restart_server': 'Please try to restart server',
             })
 
     @classmethod
@@ -94,9 +91,9 @@ class FedicomConfiguration(ModelSingleton, ModelSQL, ModelView):
             subprocess.check_output(["python",
                 "./modules/sale_fedicom/service/client.py"])
         except:
-            cls.raise_user_error('test_failed', 'restart_server')
-
-        cls.raise_user_warning('test_ok')
+            raise UserError(gettext('test_failed'), gettext('restart_server'))
+        raise UserWarning('sale_fedicom_test_ok',
+            gettext('sale_fedicom.test_ok'))
 
 
 class FedicomConfigurationCompany(ModelSQL):

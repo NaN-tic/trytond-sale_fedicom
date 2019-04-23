@@ -10,6 +10,7 @@ from trytond.model import ModelSQL, ModelView, fields
 from trytond.pool import Pool, PoolMeta
 from trytond.rpc import RPC
 from trytond.transaction import Transaction
+from trytond.i18n import gettext
 
 __metaclass__ = PoolMeta
 __all__ = ['Party', 'Sale', 'FedicomLog']
@@ -40,12 +41,6 @@ class Sale(metaclass=PoolMeta):
         cls.__rpc__.update({
                 'process_order': RPC(instantiate=0, readonly=False),
                 })
-        cls._error_messages.update({
-            'user_not_exists': 'User code (%s) not Exists',
-            'incorrect_login': 'Incorrect Login User',
-            'incorrect_password': 'Incorrect Password (%s)',
-            'no_products': 'El pedido no ha podido assignar ningun Producto',
-            })
 
     @staticmethod
     def default_from_fedicom():
@@ -101,25 +96,28 @@ class Sale(metaclass=PoolMeta):
             # Log error
             with transaction.set_user(0):
                 FedicomLog.create([{
-                    'message': cls.raise_user_error('user_not_exists',
-                               str(customer_code), raise_exception=False)
-                }])
+                            'message': gettext('sale_fedicom.user_not_exists',
+                                code=str(customer_code))
+                            }])
             logger.info("Customer code %s not found" % customer_code)
-            return {'error': cls.raise_user_error('incorrect_login',
-                    raise_exception=False)}
+            return {
+                'error': gettext('sale_fedicom.incorrect_login'),
+                }
 
         party = parties[0]
         if party.fedicom_password != password:
             # Log error, specifying party
             with transaction.set_user(0):
                 FedicomLog.create([{
-                    'message': cls.raise_user_error('incorrect_password',
-                            password, raise_exception=False),
-                    'party': party.id
-                }])
+                            'message': gettext(
+                                'sale_fedicom.incorrect_password',
+                                password=password),
+                            'party': party.id
+                            }])
             logger.info("Invalid password for user %s " % customer_code)
-            return {'error': cls.raise_user_error('incorrect_login',
-                    raise_exception=False)}
+            return {
+                'error': gettext('sale_fedicom.incorrect_login'),
+                }
 
         sale = cls(
             party=party,
@@ -194,13 +192,14 @@ class Sale(metaclass=PoolMeta):
         if len(lines) == 0:
             with transaction.set_user(0):
                 FedicomLog.create([{
-                    'message': cls.raise_user_error('no_products',
-                                raise_exception=False),
-                    'party': party.id,
-                }])
+                            'message': gettext('sale_fedicom.no_products'),
+                            'party': party.id,
+                            }])
 
             logger.info("Returning Misses")
-            return {'missingStock': missing_stock}
+            return {
+                'missingStock': missing_stock,
+                }
 
         sales = cls.create_fedicom_sales(sale, lines)
         for sale in sales:
@@ -216,7 +215,7 @@ class Sale(metaclass=PoolMeta):
             return {
                 'error': msg_error,
                 'missingStock': missing_stock
-            }
+                }
         cls.process_fedicom_sales(sales)
         for sale in sales:
             logger.info("Order confirmed %s" % sale.rec_name)
