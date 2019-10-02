@@ -92,8 +92,7 @@ class FedicomConfiguration(ModelSingleton, ModelSQL, ModelView):
                 "./modules/sale_fedicom/service/client.py"])
         except:
             raise UserError(gettext('test_failed'), gettext('restart_server'))
-        raise UserWarning('sale_fedicom_test_ok',
-            gettext('sale_fedicom.test_ok'))
+        raise UserError(gettext('sale_fedicom.test_ok'))
 
 
 class FedicomConfigurationCompany(ModelSQL):
