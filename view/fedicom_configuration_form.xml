@@ -13,6 +13,6 @@
     <field name="host"/>
     <label name="port"/>
     <field name="port"/>
-    <button name="test" string="Test conection" colspan="2"/>
-    <button name="restart" string="Reset conection" colspan="2"/>
+    <button name="test" colspan="2"/>
+    <button name="restart" colspan="2"/>
 </form>
