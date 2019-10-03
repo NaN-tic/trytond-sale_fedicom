@@ -17,7 +17,7 @@
         </record>
         <record model="ir.model.button" id="configuration_test_button">
             <field name="name">test</field>
-            <field name="string">Test</field>
+            <field name="string">Test conection</field>
             <field name="model" search="[('model', '=', 'fedicom.configuration')]"/>
         </record>
         <record model="ir.model.button-res.group" id="configuration_test_button_group_sale_admin">
@@ -26,7 +26,7 @@
         </record>
         <record model="ir.model.button" id="configuration_restart_button">
             <field name="name">restart</field>
-            <field name="string">Restart</field>
+            <field name="string">Reset conection</field>
             <field name="model" search="[('model', '=', 'fedicom.configuration')]"/>
         </record>
         <record model="ir.model.button-res.group" id="configuration_restart_button_group_sale_admin">
