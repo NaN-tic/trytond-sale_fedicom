@@ -1,7 +1,7 @@
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
 
-from .message import *
+from .message import Message, messages
 
 
 class FinishOrder(Message):
@@ -16,8 +16,8 @@ class FinishOrder(Message):
         self.bonus = message[14:20]
 
     def finishOrder(self, num_lines, total_amount, bonus):
-        self.code = message['FINISH_ORDER_CODE']
-        self.subcode = message['FINISH_ORDER_SUBCODE']
+        self.code = messages['FINISH_ORDER_CODE']
+        self.subcode = messages['FINISH_ORDER_SUBCODE']
         self.num_lines = num_lines
         self.total_amount = total_amount
         self.bonus = bonus
@@ -26,9 +26,9 @@ class FinishOrder(Message):
         return ['1010', '0199']
 
     def __str__(self):
-        return message['FINISH_ORDER_CODE'] + \
-            message['FINISH_ORDER_SUBCODE'] + \
+        return messages['FINISH_ORDER_CODE'] + \
+            messages['FINISH_ORDER_SUBCODE'] + \
             self.numlines.rjust(4, '0') + \
             self.total_amount.rjust(6, '0') + \
             self.bonus.rjust(6, '0') + \
-            message[END_MESSAGE]
+            messages['END_MESSAGE']

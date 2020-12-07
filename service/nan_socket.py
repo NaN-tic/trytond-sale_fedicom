@@ -2,9 +2,9 @@
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms
 
-from socket import *
+import socket
 import logger
-from messages.close_session import *
+from messages.close_session import CloseSession
 
 
 log = logger.Logger()
@@ -14,7 +14,7 @@ class Socket:
 
     def __init__(self, sock=None):
         if sock is None:
-            self.socket = socket(AF_INET, SOCK_STREAM)
+            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         else:
             self.socket = sock
             self.socket.settimeout(120)
@@ -23,7 +23,7 @@ class Socket:
         self.socket.connect(host, port)
 
     def disconnect(self):
-        self.socket.shutdown(SHUT_RDWR)
+        self.socket.shutdown(socket.SHUT_RDWR)
         self.socket.close()
 
     def send(self, msg, exception=False, traceback=None):

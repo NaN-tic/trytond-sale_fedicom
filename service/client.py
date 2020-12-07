@@ -2,11 +2,11 @@
 # copyright notices and license terms.
 
 from . import logger
-from .messages.close_session import *
-from .messages.init_session import *
-from .messages.order import *
-from .messages.order_line import *
-from .messages.finish_order import *
+from .messages.close_session import CloseSession
+from .messages.init_session import InitSession
+from .messages.order import Order
+from .messages.order_line import OrderLine
+from .messages.finish_order import FinishOrder
 import socket
 
 user = 'user'
