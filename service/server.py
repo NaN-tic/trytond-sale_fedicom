@@ -1,9 +1,9 @@
 #This file is part of Tryton.  The COPYRIGHT file at the top level of
 #this repository contains the full copyright notices and license terms.
-
 import threading
 import logger
-from clientthread import *
+import socket
+from clientthread import ClientThread
 
 log = logger.Logger()
 
@@ -14,8 +14,8 @@ class ServerThread(threading.Thread):
         threading.Thread.__init__(self)
         self.port = port
         self.interface = interface
-        self.socket = socket(AF_INET, SOCK_STREAM)
-        self.socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.bind((self.interface, self.port))
         self.socket.listen(5)
         self.threads = []
@@ -48,7 +48,7 @@ class ServerThread(threading.Thread):
             t.stop()
             try:
                 if hasattr(socket, 'SHUT_RDWR'):
-                    self.socket.shutdown(SHUT_RDWR)
+                    self.socket.shutdown(socket.SHUT_RDWR)
                 else:
                     self.socket.shutdown(2)
                     self.socket.close()

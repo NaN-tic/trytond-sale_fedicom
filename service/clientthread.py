@@ -3,9 +3,8 @@
 # copyright notices and license terms.
 import os
 import threading
-from _socket import *
 from . import logger
-from .nan_socket import *
+from .nan_socket import Socket
 from .messages.init_session import InitSession
 from .messages.close_session import CloseSession
 from .messages.finish_order import FinishOrder
