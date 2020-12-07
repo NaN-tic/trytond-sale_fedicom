@@ -2,3 +2,5 @@
 # copyright notices and license terms.
 
 from .test_sale_fedicom import suite
+
+__all__ = ['suite']
